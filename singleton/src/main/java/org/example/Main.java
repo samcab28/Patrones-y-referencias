@@ -1,9 +1,15 @@
 package org.example;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import model.Conexion;
+
 public class Main {
     public static void main(String[] args) {
+        //Conexion c = new Conexion();
+        Conexion c = Conexion.getInstancia();
+        c.Conectar();
+        c.Desconectar();
 
+        boolean rpta = c instanceof Conexion;
+        System.out.println(rpta);
     }
 }
