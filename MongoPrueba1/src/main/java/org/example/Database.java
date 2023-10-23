@@ -2,11 +2,14 @@ package org.example;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Database {
     private MongoClient client;
@@ -81,5 +84,79 @@ public class Database {
         }
     }
 
-    
+
+
+
+        public boolean validarPersona(String nombre, int edad) {
+            // Construir el filtro para encontrar la persona con el nombre y la edad especificados
+            Bson filtro = Filters.and(
+                    Filters.eq("nombre", nombre),
+                    Filters.eq("edad", edad)
+            );
+
+            // Buscar una persona que cumple con el filtro
+            Document persona = col.find(filtro).first();
+
+            return persona != null; // Devuelve true si la persona se encuentra en la base de datos
+        }
+
+        public void modificarPersona(String nombre, int edad) {
+            if (validarPersona(nombre, edad)) {
+                System.out.println("Persona encontrada en la base de datos.");
+                System.out.println("¿Qué deseas cambiar?");
+                System.out.println("1. Cambiar nombre");
+                System.out.println("2. Cambiar edad");
+
+                Scanner scanner = new Scanner(System.in);
+                int opcion = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea
+
+                switch (opcion) {
+                    case 1:
+                        System.out.print("Introduce el nuevo nombre: ");
+                        String nuevoNombre = scanner.nextLine();
+                        modificarNombre(nombre, edad, nuevoNombre);
+                        break;
+                    case 2:
+                        System.out.print("Introduce la nueva edad: ");
+                        int nuevaEdad = scanner.nextInt();
+                        modificarEdad(nombre, edad, nuevaEdad);
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            } else {
+                System.out.println("No se encontró ninguna persona con los datos especificados.");
+            }
+        }
+
+        private void modificarNombre(String nombre, int edad, String nuevoNombre) {
+            Bson filtro = Filters.and(
+                    Filters.eq("nombre", nombre),
+                    Filters.eq("edad", edad)
+            );
+            Bson update = Updates.set("nombre", nuevoNombre);
+            UpdateResult result = col.updateOne(filtro, update);
+            if (result.getModifiedCount() > 0) {
+                System.out.println("Nombre modificado con éxito.");
+            } else {
+                System.out.println("No se realizó ningún cambio en el nombre.");
+            }
+        }
+
+        private void modificarEdad(String nombre, int edad, int nuevaEdad) {
+            Bson filtro = Filters.and(
+                    Filters.eq("nombre", nombre),
+                    Filters.eq("edad", edad)
+            );
+            Bson update = Updates.set("edad", nuevaEdad);
+            UpdateResult result = col.updateOne(filtro, update);
+            if (result.getModifiedCount() > 0) {
+                System.out.println("Edad modificada con éxito.");
+            } else {
+                System.out.println("No se realizó ningún cambio en la edad.");
+            }
+        }
+
+
 }

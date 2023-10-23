@@ -29,11 +29,15 @@ public class Main {
         }
 
         listaPersonas.clear();
+
+
+        //databaseFacade.borrarPersona("samir",19);
+
+
+        databaseFacade.modificarPersona("pamela",20);
+
         // Cargar datos de la base de datos
         databaseFacade.cargarPersonas(listaPersonas);
-
-        databaseFacade.borrarPersona("samir",19);
-        // Cerrar la conexión a la base de datos
         databaseFacade.cerrarConexion();
 
 
